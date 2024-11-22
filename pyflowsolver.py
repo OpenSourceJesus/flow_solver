@@ -67,6 +67,8 @@ RESULT_STRINGS = dict(s='successful',
 					  f='failed',
 					  u='unsolvable')
 
+puzzle = []
+
 ######################################################################
 
 def all_pairs(collection):
@@ -120,7 +122,7 @@ column j.'''
 
 	return ((dir_bit, ni, nj) for (dir_bit, ni, nj)
 			in all_neighbors(i, j)
-			if valid_pos(size, ni, nj))
+			if valid_pos(size, ni, nj) and puzzle[ni][nj] != '-')
 
 ######################################################################
 def repair_colors(puzzle, colors):
@@ -781,6 +783,7 @@ def Debug (options, stats):
 ######################################################################
 
 def pyflow_solver_main():
+	global puzzle
 
 	'''Main loop if module run as script.'''
 
@@ -820,7 +823,7 @@ def pyflow_solver_main():
 		# open file
 		try:
 			with open(filename, 'r') as infile:
-				puzzle, colors = parse_puzzle(options, infile, filename)
+				_puzzle, colors = parse_puzzle(options, infile, filename)
 		except IOError:
 			print('{}: error opening file'.format(filename))
 			continue
@@ -828,6 +831,8 @@ def pyflow_solver_main():
 		if colors is None:
 			continue
 
+		puzzle = _puzzle
+		
 		puzzle_count += 1
 
 		color_var, dir_vars, num_vars, clauses, reduce_time = \
